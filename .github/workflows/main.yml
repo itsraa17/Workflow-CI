@@ -16,18 +16,15 @@ jobs:
     - name: Install Miniconda
       uses: conda-incubator/setup-miniconda@v3
       with:
-        auto-update-conda: true
         python-version: "3.10"
+        auto-update-conda: true
 
-    - name: Create environment from conda.yaml
+    - name: Create MLflow environment
       run: |
         cd MLProject
         conda env create -f conda.yaml -n weather_env || conda env update -f conda.yaml -n weather_env
-        conda init bash
-        source ~/.bashrc
 
-    - name: Run MLflow Project
+    - name: Run MLflow project
       run: |
         cd MLProject
-        conda activate weather_env
-        mlflow run .
+        conda run -n weather_env mlflow run .
