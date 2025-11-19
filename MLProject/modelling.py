@@ -1,4 +1,3 @@
-import argparse
 import pandas as pd
 import mlflow
 import mlflow.sklearn
@@ -8,29 +7,23 @@ from sklearn.metrics import accuracy_score
 
 mlflow.autolog()
 
-# Argumen agar bisa dipanggil dari MLflow Project
-parser = argparse.ArgumentParser()
-parser.add_argument("--data_path", type=str, default="weather_preprocessed.csv")
-args = parser.parse_args()
-
 # Load dataset
-df = pd.read_csv(args.data_path)
+df = pd.read_csv("weather_preprocessed.csv")
 
 # Drop kolom yang tidak digunakan
 df = df.drop(columns=["date", "weather"])
 
-# Split fitur & target
+# Fitur & target
 X = df.drop("weather_encoded", axis=1)
 y = df["weather_encoded"]
 
-# Train-test split
+# Split
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-# Experiment tracking
+# MLflow experiment
 with mlflow.start_run():
-
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
 
@@ -38,5 +31,3 @@ with mlflow.start_run():
     acc = accuracy_score(y_test, y_pred)
 
     print("Accuracy:", acc)
-
-    mlflow.log_metric("accuracy", acc)
