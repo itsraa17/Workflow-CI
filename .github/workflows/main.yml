@@ -13,13 +13,21 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install Mamba
-      uses: mamba-org/setup-micromamba@v1
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v3
       with:
-        environment-file: MLProject/conda.yaml
-        environment-name: weather_env
+        auto-update-conda: true
+        python-version: "3.10"
+
+    - name: Create environment from conda.yaml
+      run: |
+        cd MLProject
+        conda env create -f conda.yaml -n weather_env || conda env update -f conda.yaml -n weather_env
+        conda init bash
+        source ~/.bashrc
 
     - name: Run MLflow Project
       run: |
         cd MLProject
-        micromamba run -n weather_env mlflow run .
+        conda activate weather_env
+        mlflow run .
