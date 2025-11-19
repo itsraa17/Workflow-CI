@@ -1,0 +1,25 @@
+name: MLflow CI
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Mamba
+      uses: mamba-org/setup-micromamba@v1
+      with:
+        environment-file: MLProject/conda.yaml
+        environment-name: weather_env
+
+    - name: Run MLflow Project
+      run: |
+        cd MLProject
+        micromamba run -n weather_env mlflow run .
