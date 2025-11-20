@@ -13,23 +13,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Install Miniconda
-    - name: Install Miniconda
-      uses: conda-incubator/setup-miniconda@v3
-      with:
-        python-version: "3.10"
-        auto-update-conda: true
-        activate-environment: weather_env
-        environment-file: MLProject/conda.yaml
-
-    # Prepare environment
-    - name: Create or Update Environment
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
     - name: Install Miniconda
       uses: conda-incubator/setup-miniconda@v3
       with:
@@ -43,13 +26,11 @@ jobs:
         cd MLProject
         conda env update -n weather_env -f conda.yaml || conda env create -n weather_env -f conda.yaml
 
-    # Run MLflow Project
     - name: Run MLflow project
       run: |
         cd MLProject
         conda run -n weather_env mlflow run .
 
-    # Upload MLflow Artifacts
     - name: Upload MLflow Artifacts
       uses: actions/upload-artifact@v3
       with:
